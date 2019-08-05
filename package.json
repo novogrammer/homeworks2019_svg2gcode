@@ -9,8 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "jquery": "^3.4.1",
-    "jsdom": "^15.1.1",
+    "cheerio": "^1.0.0-rc.3",
     "svg-pathdata": "^5.0.2"
   }
 }

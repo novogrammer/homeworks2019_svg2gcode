@@ -1,15 +1,10 @@
-const fs=require("fs");
 const {
   SVGPathData,
   SVGPathDataTransformer,
   SVGPathDataEncoder,
   SVGPathDataParser,
 }=require("svg-pathdata");
-const {JSDOM}=require("jsdom");
-
-const dom=new JSDOM("");
-const $=require("jquery")(dom.window);
-
+const $=require("cheerio");
 
 //M L Cだけか確認する関数
 function validatePathData(pathData){
@@ -111,6 +106,7 @@ function convertSvgPathDataToGcodeCommands(svgPathData){
 
 
 function convertSvgToGcode(svgPath,gcodePath){
+  const fs=require("fs");
   let svg=fs.readFileSync(svgPath,"utf8");
   let $svg=$(svg);
 
