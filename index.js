@@ -104,18 +104,47 @@ function convertSvgPathDataToGcodeCommands(svgPathData){
   
 }
 
+function convertPlanA(pathList){
+  let gcodeText="";
+  let path=pathList.join("\n");
+  let pathDataOriginal=new SVGPathData(path);
+  let gcodeCommands=convertSvgPathDataToGcodeCommands(pathDataOriginal);
+  gcodeText+=gcodeCommands.join("\n");
+  return gcodeText;
+}
+function convertPlanB(pathList){
+  let gcodeText="";
+  for(let path of pathList){
+    let pathDataOriginal=new SVGPathData(path);
+    let gcodeCommands=convertSvgPathDataToGcodeCommands(pathDataOriginal);
+    gcodeText+="\n";
+    gcodeText+=gcodeCommands.join("\n");
+  }
+  return gcodeText;
+}
+function convertPlanC(pathList){
+  let gcodeText="";
+  let path=pathList.join("\n");
+  let pathDataOriginal=new SVGPathData(path);
+  let gcodeCommands=convertSvgPathDataToGcodeCommands(pathDataOriginal);
+  for(let gcodeCommand of gcodeCommands){
+    if(gcodeCommand.match(/^G00/)){
+      gcodeText+="\n";
+    }
+    gcodeText+=gcodeCommand+"\n";
+  }
+  return gcodeText;
+}
 
 function convertSvgToGcode(svgPath,gcodePath){
   const fs=require("fs");
   let svg=fs.readFileSync(svgPath,"utf8");
   let $svg=$(svg);
 
-  //いくつかあるpathタグのdを空白で結合する
-  let path=$svg.find("path").toArray().map((e)=>$(e).attr("d")).join(" ");
-  let pathDataOriginal=new SVGPathData(path);
-  let gcodeCommands=convertSvgPathDataToGcodeCommands(pathDataOriginal);
-  
-  fs.writeFileSync(gcodePath,gcodeCommands.join("\n"));
+  //いくつかあるpathタグのdの配列
+  let pathList=$svg.find("path").toArray().map((e)=>$(e).attr("d"));
+  let gcodeText=convertPlanC(pathList);
+  fs.writeFileSync(gcodePath,gcodeText);
 }
 
 
